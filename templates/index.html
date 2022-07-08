@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %} HomePage {% endblock %}
+
+{% block content %}
+<div class="header">
+    School Management System
+</div>
+<div class="row mt-5 m-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    Manage Students
+                    <!-- <button type="button" class="btn btn-success float-end"
+                    data-toggle="modal" data-target="#exampleModal">Add Student</button> -->
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add Student
+                </button>
+
+
+                </h2>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages%}
+
+                {% for message in messages%}
+
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>{{message}}</strong>
+                </div>
+
+
+                {% endfor %}
+
+                {% endif %}
+
+                {% endwith %}
+                <table class="table table-bordered table-dark  table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Student No:</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Program</th>
+                            <th>Course</th>
+                            <th>Documents/Files</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in students %}
+                            <tr>
+                                <td>{{row.id}}</td>
+                                <td>{{row.name}}</td>
+                                <td>{{row.student_no}}</td>
+                                <td>{{row.phone}}</td>
+                                <td>{{row.address}}</td>
+                                <td>{{row.program}}</td>
+                                <td>{{row.course}}</td>
+                                <td>{{row.document}}</td>
+                                <td>
+                                    <a href="/view/{{row.id}}" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{row.id}}">View</a>
+                                    <a href="/update/{{row.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModalToggle{{row.id}}">Edit</a>
+                                    <a href="{{url_for('download')}}" class="btn btn-warning">Download</a>
+                                    <a href="/delete/{{row.id}}" name="delete_user" class="btn btn-danger" onclick="return confirm('Are you sure to delete?')" >Delete</a>
+                                </td>
+                            </tr>
+                    </tbody>
+
+                    <!-- Button trigger modal -->
+                    <!-- Modal view-->
+                    <div class="modal fade" id="staticBackdrop{{row.id}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label>Name:</label>
+                                        <input type="text" name="name" class="form-control" value="{{row.name}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Student No:</label>
+                                        <input type="text" name="email" class="form-control" value="{{row.student_no}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Phone:</label>
+                                        <input type="text" name="phone" class="form-control" value="{{row.phone}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Address:</label>
+                                        <input type="text" name="address" class="form-control" value="{{row.address}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Program:</label>
+                                        <input type="text" name="program" class="form-control" value="{{row.program}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Course:</label>
+                                        <input type="text" name="course" class="form-control" value="{{row.course}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Document:</label>
+                                        <input type="text" name="document" class="form-control" value="{{row.document}}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal edit -->
+                    <div class="modal fade" id="exampleModalToggle{{row.id}}" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalToggleLabel">Update Student</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{url_for('update')}}" method="POST">
+                                    <div class="mb-3">
+                                        <label>Name:</label>
+                                        <input type="hidden" name="id" value="{{row.id}}">
+                                        <input type="text" name="name" class="form-control" value="{{row.name}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Student No:</label>
+                                        <input type="text" name="student" class="form-control" value="{{row.student_no}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Phone:</label>
+                                        <input type="text" name="phone" class="form-control" value="{{row.phone}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Address:</label>
+                                        <input type="text" name="address" class="form-control" value="Nairobi">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Program:</label>
+                                        <input type="text" name="program" class="form-control" value="{{row.program}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Course:</label>
+                                        <input type="text" name="course" class="form-control" value="{{row.course}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Document:</label>
+                                        <input type="text" name="document" class="form-control"
+                                            value="{{row.document}}">
+                                    </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update Student</button>
+                                </div>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </table>
+
+                <!-- Modal add students -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Students Information</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('insert')}}" method="POST">
+                                    <div class="mb-3">
+                                        <label>Name:</label>
+                                        <input type="text" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Student No:</label>
+                                        <input type="text" name="student" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Phone:</label>
+                                        <input type="text" name="phone" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Address:</label>
+                                        <input type="text" name="address" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Program:</label>
+                                        <input type="text" name="program" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Course:</label>
+                                        <input type="text" name="course" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Document:</label>
+                                        <input type="file" name="document" class="form-control" required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Add Student</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
